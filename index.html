@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dra. Yasmin Pinheiro Santos | Psicóloga Infantojuvenil</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1e2d4e;
+    --navy-deep: #13203a;
+    --navy-mid: #2a3f6b;
+    --blue-soft: #3d5a8a;
+    --cream: #f7f4ef;
+    --cream-dark: #ede8df;
+    --white: #ffffff;
+    --text: #2c2c2c;
+    --text-soft: #6b6b6b;
+    --gold: #c8a96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ══════════════════════════════
+     SIDEBAR
+  ══════════════════════════════ */
+  .sidebar-overlay {
+    position: fixed; inset: 0;
+    background: rgba(13,20,38,.6);
+    backdrop-filter: blur(3px);
+    z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s;
+  }
+  .sidebar-overlay.show { opacity: 1; pointer-events: all; }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 280px; height: 100vh;
+    background: var(--navy-deep);
+    z-index: 201;
+    display: flex; flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .sidebar-header {
+    padding: 36px 28px 28px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .sidebar-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .sidebar-crp {
+    font-size: .72rem;
+    font-weight: 500;
+    letter-spacing: .15em;
+    color: var(--gold);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav { padding: 20px 0; flex: 1; }
+  .sidebar-nav a {
+    display: block;
+    padding: 13px 28px;
+    color: rgba(255,255,255,.6);
+    text-decoration: none;
+    font-size: .9rem;
+    font-weight: 400;
+    letter-spacing: .04em;
+    transition: all .2s;
+    border-left: 3px solid transparent;
+  }
+  .sidebar-nav a:hover {
+    color: var(--white);
+    background: rgba(255,255,255,.05);
+    border-left-color: var(--gold);
+    padding-left: 34px;
+  }
+
+  .sidebar-wpp {
+    margin: 20px 24px 36px;
+    display: block;
+    padding: 13px 20px;
+    background: #25d366;
+    color: var(--white);
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: .85rem;
+    letter-spacing: .06em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: opacity .2s;
+  }
+  .sidebar-wpp:hover { opacity: .88; }
+
+  /* ══════════════════════════════
+     TOPBAR
+  ══════════════════════════════ */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--navy-deep);
+    height: 62px;
+    display: flex; align-items: center;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+
+  .menu-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 8px; display: flex; flex-direction: column;
+    gap: 5px; flex-shrink: 0;
+  }
+  .menu-btn span {
+    display: block; width: 22px; height: 1.5px;
+    background: var(--white);
+    transition: all .25s;
+  }
+
+  .topbar-center {
+    flex: 1; text-align: center;
+  }
+  .topbar-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: .06em;
+  }
+  .topbar-sub {
+    font-size: .62rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 1px;
+  }
+
+  .topbar-wpp-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    color: rgba(255,255,255,.8);
+    font-family: 'Jost', sans-serif;
+    font-size: .72rem;
+    font-weight: 500;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: all .2s;
+  }
+  .topbar-wpp-btn:hover {
+    background: rgba(255,255,255,.1);
+    color: var(--white);
+  }
+
+  /* ══════════════════════════════
+     HERO
+  ══════════════════════════════ */
+  .hero {
+    background: var(--navy);
+    padding: 56px 22px 52px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,110,.12) 0%, transparent 70%);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(61,90,138,.3) 0%, transparent 70%);
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+    position: relative; z-index: 1;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.9rem, 7vw, 2.8rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 10px;
+    position: relative; z-index: 1;
+  }
+  .hero-subtitle {
+    font-size: .8rem;
+    font-weight: 300;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.38);
+    margin-bottom: 20px;
+    position: relative; z-index: 1;
+  }
+  .hero-desc {
+    font-size: .92rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(255,255,255,.65);
+    max-width: 360px;
+    margin: 0 auto 30px;
+    position: relative; z-index: 1;
+  }
+  .hero-desc strong { color: rgba(255,255,255,.9); font-weight: 500; }
+
+  .hero-badges {
+    display: flex; justify-content: center; gap: 10px;
+    flex-wrap: wrap;
+    position: relative; z-index: 1;
+    margin-bottom: 30px;
+  }
+  .badge {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: .72rem;
+    font-weight: 500;
+    letter-spacing: .06em;
+    color: rgba(255,255,255,.7);
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 30px;
+    background: #25d366;
+    color: var(--white);
+    font-family: 'Jost', sans-serif;
+    font-size: .85rem;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 8px;
+    position: relative; z-index: 1;
+    transition: opacity .2s, transform .15s;
+  }
+  .hero-cta:hover { opacity: .9; transform: translateY(-2px); }
+
+  /* ══════════════════════════════
+     CREDENTIALS BAR
+  ══════════════════════════════ */
+  .cred-bar {
+    background: var(--navy-mid);
+    display: flex; justify-content: space-around;
+    padding: 16px 10px;
+  }
+  .cred-item { text-align: center; }
+  .cred-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+  .cred-label {
+    font-size: .62rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 3px;
+  }
+
+  /* ══════════════════════════════
+     MAIN
+  ══════════════════════════════ */
+  main { max-width: 560px; margin: 0 auto; padding: 0 18px 60px; }
+
+  /* section labels */
+  .sec-label {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .sec-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .sec-desc {
+    font-size: .88rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-soft);
+  }
+
+  /* divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cream-dark), transparent);
+    margin: 40px 0;
+  }
+
+  /* ══════════════════════════════
+     SERVICES
+  ══════════════════════════════ */
+  .services { padding: 40px 0 0; }
+  .services-grid { display: grid; gap: 12px; margin-top: 22px; }
+  .service-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex; align-items: center; gap: 16px;
+    border: 1px solid var(--cream-dark);
+    transition: border-color .2s, transform .15s, box-shadow .2s;
+  }
+  .service-card:hover {
+    border-color: var(--navy);
+    transform: translateX(4px);
+    box-shadow: 0 4px 20px rgba(30,45,78,.08);
+  }
+  .service-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--navy);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .service-dot svg { width: 16px; height: 16px; fill: var(--gold); }
+  .service-card h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 2px;
+  }
+  .service-card p { font-size: .8rem; color: var(--text-soft); line-height: 1.4; }
+
+  /* ══════════════════════════════
+     FORM SECTION
+  ══════════════════════════════ */
+  .form-section { padding: 40px 0 0; }
+
+  .form-wrapper {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(30,45,78,.1);
+    margin-top: 22px;
+  }
+  .form-header {
+    background: var(--navy);
+    padding: 20px 24px;
+  }
+  .form-header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .form-header p {
+    font-size: .78rem;
+    color: rgba(255,255,255,.5);
+    margin-top: 3px;
+  }
+
+  /* Google Form iframe embed */
+  .form-embed {
+    width: 100%;
+    min-height: 600px;
+    border: none;
+    display: block;
+    background: var(--white);
+  }
+
+  /* fallback manual form (shown if no iframe src) */
+  .form-body { padding: 24px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 6px;
+  }
+  .form-group label span { color: #c0392b; }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    font-family: 'Jost', sans-serif;
+    font-size: .88rem;
+    color: var(--text);
+    background: var(--cream);
+    outline: none;
+    transition: border-color .2s, background .2s;
+    -webkit-appearance: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--navy);
+    background: var(--white);
+  }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+
+  .form-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Jost', sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background .2s, transform .15s;
+  }
+  .form-submit:hover { background: var(--navy-mid); transform: translateY(-1px); }
+
+  /* ══════════════════════════════
+     TESTIMONIALS
+  ══════════════════════════════ */
+  .testimonials { padding: 40px 0 0; }
+
+  .stars {
+    color: var(--gold);
+    font-size: .9rem;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .testi-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 22px 22px 20px;
+    border: 1px solid var(--cream-dark);
+    margin-bottom: 14px;
+    position: relative;
+    transition: box-shadow .2s;
+  }
+  .testi-card:hover { box-shadow: 0 6px 24px rgba(30,45,78,.07); }
+  .testi-card::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    color: var(--navy);
+    opacity: .08;
+    position: absolute;
+    top: 4px; left: 14px;
+    line-height: 1;
+  }
+
+  .testi-text {
+    font-size: .88rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text);
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+  .testi-author {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .testi-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem; font-weight: 700;
+    color: var(--gold); flex-shrink: 0;
+  }
+  .testi-name {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .testi-role {
+    font-size: .72rem;
+    color: var(--text-soft);
+    margin-top: 1px;
+  }
+
+  /* ══════════════════════════════
+     WPP BANNER
+  ══════════════════════════════ */
+  .wpp-banner {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+    margin: 40px 0 0;
+  }
+  .wpp-banner p {
+    font-size: .88rem;
+    color: rgba(255,255,255,.6);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .wpp-banner strong { color: var(--white); }
+  .wpp-big-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px;
+    background: #25d366;
+    color: var(--white);
+    font-family: 'Jost', sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: opacity .2s;
+  }
+  .wpp-big-btn:hover { opacity: .88; }
+
+  /* ══════════════════════════════
+     FOOTER
+  ══════════════════════════════ */
+  footer {
+    background: var(--navy-deep);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 60px;
+  }
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .footer-crp {
+    font-size: .7rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  footer p {
+    font-size: .75rem;
+    color: rgba(255,255,255,.25);
+  }
+
+  /* ══════════════════════════════
+     ANIMATIONS
+  ══════════════════════════════ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-tag  { animation: fadeUp .5s ease both; }
+  .hero h1   { animation: fadeUp .55s .08s ease both; }
+  .hero-subtitle { animation: fadeUp .55s .12s ease both; }
+  .hero-desc { animation: fadeUp .55s .16s ease both; }
+  .hero-badges { animation: fadeUp .55s .2s ease both; }
+  .hero-cta  { animation: fadeUp .55s .25s ease both; }
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-name">Dra. Yasmin<br>Pinheiro Santos</div>
+    <div class="sidebar-crp">CRP 11/19274</div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#inicio" onclick="closeSidebar()">Página Inicial</a>
+    <a href="#servicos" onclick="closeSidebar()">Serviços</a>
+    <a href="#agendamento" onclick="closeSidebar()">Agendamento</a>
+    <a href="#depoimentos" onclick="closeSidebar()">Depoimentos</a>
+    <a href="/Novidades.html" onclick="closeSidebar()">Novidades</a>
+  </nav>
+  <a href="https://api.whatsapp.com/message/E3NKFQCPU4LGM1?autoload=1&app_absent=0" class="sidebar-wpp" target="_blank">
+    WhatsApp
+  </a>
+</aside>
+
+<!-- TOPBAR -->
+<header class="topbar" id="inicio">
+  <button class="menu-btn" onclick="openSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-center">
+    <div class="topbar-name">Yasmin Pinheiro Santos</div>
+    <div class="topbar-sub">Psicóloga Infantojuvenil · CRP 11/19274</div>
+  </div>
+  <a href="https://api.whatsapp.com/message/E3NKFQCPU4LGM1?autoload=1&app_absent=0" target="_blank" class="topbar-wpp-btn">Agendar</a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Psicologia Clínica Infantojuvenil</div>
+  <h1>Psicóloga Particular<br>Infantojuvenil</h1>
+  <div class="hero-subtitle">Yasmin Pinheiro Santos · Criando e Desenvolvendo</div>
+  <p class="hero-desc">
+    Desde a graduação, dedico minha carreira ao universo infantil. Com experiência em crianças autistas, <strong>duas pós-graduações</strong> e especializações na área, atuo com um olhar único: <strong>técnico, humano e acolhedor.</strong>
+  </p>
+  <div class="hero-badges">
+    <span class="badge">Psicoterapia Infantil</span>
+    <span class="badge">TEA</span>
+    <span class="badge">Atendimento Juvenil</span>
+    <span class="badge">Orientação para Pais</span>
+  </div>
+  <a href="https://api.whatsapp.com/message/E3NKFQCPU4LGM1?autoload=1&app_absent=0" target="_blank" class="hero-cta">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.107.549 4.09 1.512 5.812L0 24l6.362-1.49A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.003-1.369l-.36-.214-3.724.872.937-3.63-.235-.373A9.818 9.818 0 1112 21.818z"/></svg>
+    Agendar pelo WhatsApp
+  </a>
+</section>
+
+<!-- CREDENTIALS BAR -->
+<div class="cred-bar">
+  <div class="cred-item">
+    <div class="cred-val">2</div>
+    <div class="cred-label">Pós-Graduações</div>
+  </div>
+  <div class="cred-item">
+    <div class="cred-val">TEA</div>
+    <div class="cred-label">Especialista</div>
+  </div>
+  <div class="cred-item">
+    <div class="cred-val">CRP</div>
+    <div class="cred-label">11/19274</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- SERVICES -->
+  <section class="services" id="servicos">
+    <div class="sec-label">O que ofereço</div>
+    <h2 class="sec-title">Serviços</h2>
+    <p class="sec-desc">Atendimento especializado para crianças e adolescentes, com escuta acolhedora e abordagem clínica diferenciada.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-dot">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
+        <div>
+          <h4>Psicoterapia Infantil</h4>
+          <p>Acompanhamento clínico para crianças, com abordagem lúdica e acolhedora.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-dot">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+        <div>
+          <h4>Psicoterapia Juvenil</h4>
+          <p>Suporte emocional para adolescentes nas fases de transição e autoconhecimento.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-dot">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        </div>
+        <div>
+          <h4>Atendimento TEA</h4>
+          <p>Experiência clínica com crianças autistas, respeitando cada singularidade.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-dot">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </div>
+        <div>
+          <h4>Orientação para Pais</h4>
+          <p>Suporte e orientação para que os pais possam apoiar melhor seus filhos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FORM SECTION -->
+  <section class="form-section" id="agendamento">
+    <div class="sec-label">Agendamento</div>
+    <h2 class="sec-title">Agende sua Consulta</h2>
+    <p class="sec-desc">Preencha o formulário abaixo e entraremos em contato para confirmar o seu horário.</p>
+
+    <div class="form-wrapper">
+      <div class="form-header">
+        <h3>Formulário de Agendamento</h3>
+        <p>Respondemos em até 24 horas</p>
+      </div>
+      <!--
+        INSTRUÇÕES:
+        Substitua o src abaixo pelo link do seu Google Forms.
+        Para obter o link: Abra seu formulário → Enviar → ícone < > → copie o link do src do iframe.
+        Exemplo: https://docs.google.com/forms/d/e/SEU_ID_AQUI/viewform?embedded=true
+      -->
+      <iframe
+        class="form-embed"
+        src="https://docs.google.com/forms/u/0/d/1uKMekMbQDQMDOghdTqo_K8b_Y2VFoWayTeel56_XxjA/viewform?embedded=true"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Formulário de Agendamento">
+        Carregando…
+      </iframe>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="depoimentos">
+    <div class="sec-label">O que dizem</div>
+    <h2 class="sec-title">Depoimentos</h2>
+
+    <div style="margin-top:22px;">
+
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Trabalho meticuloso, humano e acolhedor! Ela é extremamente cuidadosa e atenciosa. Com toda a certeza do mundo, confio meu filho às suas mãos de olhos fechados, sabendo que existem poucos profissionais como ela."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AS</div>
+          <div>
+            <div class="testi-name">Andreza Soares</div>
+            <div class="testi-role">Mãe de paciente</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Dra. Yasmin é uma profissional extremamente competente, dedicada, altamente preparada, muito atenciosa, simpática e disponível! Minha filha Marina hoje pergunta se a sessão poderia durar duas horas, vai pra terapia feliz e diz que será pra sempre! Somos muito gratos por ter Yasmin na vida de Marina!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AB</div>
+          <div>
+            <div class="testi-name">Andre Batera</div>
+            <div class="testi-role">Pai de paciente</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"A Yasmin é uma profissional incrível! Desde o primeiro atendimento com minha filha, fiquei impressionada com o cuidado, a sensibilidade e o carisma que ela demonstra. O manejo da Yasmin com as crianças é simplesmente diferenciado. Costumo dizer que ela é a 'encantadora de crianças', porque consegue conquistar a confiança dos pequenos com naturalidade e muito carinho."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">TP</div>
+          <div>
+            <div class="testi-name">Ticiane Parente</div>
+            <div class="testi-role">Mãe de paciente</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Excelente profissional. Humana, sensível e com uma capacidade linda de se empatizar e se relacionar com as crianças. Sou fã."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">PB</div>
+          <div>
+            <div class="testi-name">Paloma Brigido</div>
+            <div class="testi-role">Mãe de paciente</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WPP BANNER -->
+  <div class="wpp-banner">
+    <p>Prefere falar diretamente?<br><strong>Entre em contato pelo WhatsApp</strong> e tire todas as suas dúvidas.</p>
+    <a href="https://api.whatsapp.com/message/E3NKFQCPU4LGM1?autoload=1&app_absent=0" target="_blank" class="wpp-big-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.107.549 4.09 1.512 5.812L0 24l6.362-1.49A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.003-1.369l-.36-.214-3.724.872.937-3.63-.235-.373A9.818 9.818 0 1112 21.818z"/></svg>
+      Falar pelo WhatsApp
+    </a>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">Dra. Yasmin Pinheiro Santos</div>
+  <div class="footer-crp">CRP 11/19274 · Psicóloga Infantojuvenil</div>
+  <p>© 2026 Todos os direitos reservados</p>
+</footer>
+
+<script>
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('overlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  // smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        closeSidebar();
+        setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+      }
+    });
+  });
+</script>
+</body>
+</html>
