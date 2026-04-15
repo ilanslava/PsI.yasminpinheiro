@@ -1,0 +1,19 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "novidades"
+    label: "Novidades"
+    folder: "_novidades"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Título", name: "title", widget: "string" }
+      - { label: "Categoria", name: "tag", widget: "string", default: "Geral" }
+      - { label: "Data", name: "date", widget: "string", hint: "Ex: Abril 2026" }
+      - { label: "Resumo", name: "summary", widget: "text" }
+      - { label: "Conteúdo", name: "body", widget: "markdown" }

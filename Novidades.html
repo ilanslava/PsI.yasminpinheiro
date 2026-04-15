@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novidades | Dra. Yasmin Pinheiro Santos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1e2d4e; --navy-deep: #13203a; --cream: #f7f4ef; --cream-dark: #ede8df;
+    --white: #ffffff; --text: #2c2c2c; --text-soft: #6b6b6b; --gold: #c8a96e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+
+  .sidebar-overlay { position: fixed; inset: 0; background: rgba(13,20,38,.6); backdrop-filter: blur(3px); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .sidebar-overlay.show { opacity: 1; pointer-events: all; }
+  .sidebar { position: fixed; left: 0; top: 0; width: 280px; height: 100vh; background: var(--navy-deep); z-index: 201; display: flex; flex-direction: column; transform: translateX(-100%); transition: transform .35s cubic-bezier(.4,0,.2,1); overflow-y: auto; }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-header { padding: 36px 28px 28px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .sidebar-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--white); line-height: 1.2; }
+  .sidebar-crp { font-size: .72rem; font-weight: 500; letter-spacing: .15em; color: var(--gold); margin-top: 6px; text-transform: uppercase; }
+  .sidebar-nav { padding: 20px 0; flex: 1; }
+  .sidebar-nav a { display: block; padding: 13px 28px; color: rgba(255,255,255,.6); text-decoration: none; font-size: .9rem; font-weight: 400; letter-spacing: .04em; transition: all .2s; border-left: 3px solid transparent; }
+  .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--white); background: rgba(255,255,255,.05); border-left-color: var(--gold); padding-left: 34px; }
+  .sidebar-wpp { margin: 20px 24px 36px; display: block; padding: 13px 20px; background: #25d366; color: var(--white); border-radius: 10px; text-align: center; font-weight: 600; font-size: .85rem; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; transition: opacity .2s; }
+  .sidebar-wpp:hover { opacity: .88; }
+
+  .topbar { position: sticky; top: 0; z-index: 100; background: var(--navy-deep); height: 62px; display: flex; align-items: center; padding: 0 18px; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .menu-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+  .menu-btn span { display: block; width: 22px; height: 1.5px; background: var(--white); }
+  .topbar-center { flex: 1; text-align: center; }
+  .topbar-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--white); letter-spacing: .06em; }
+  .topbar-sub { font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin-top: 1px; }
+  .topbar-wpp-btn { background: none; border: 1px solid rgba(255,255,255,.2); border-radius: 20px; padding: 6px 14px; color: rgba(255,255,255,.8); font-family: 'Jost', sans-serif; font-size: .72rem; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; text-decoration: none; transition: all .2s; }
+  .topbar-wpp-btn:hover { background: rgba(255,255,255,.1); color: var(--white); }
+
+  .page-hero { background: var(--navy); padding: 52px 22px 44px; text-align: center; position: relative; overflow: hidden; }
+  .page-hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(200,169,110,.12) 0%, transparent 70%); }
+  .page-tag { display: inline-block; font-size: .68rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; position: relative; z-index: 1; }
+  .page-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.9rem, 7vw, 2.8rem); font-weight: 700; color: var(--white); line-height: 1.15; position: relative; z-index: 1; }
+  .page-hero p { margin-top: 12px; font-size: .9rem; color: rgba(255,255,255,.6); max-width: 340px; margin-left: auto; margin-right: auto; line-height: 1.6; position: relative; z-index: 1; }
+
+  .articles-section { padding: 48px 22px 72px; max-width: 680px; margin: 0 auto; }
+  .articles-section.hidden { display: none; }
+
+  .article-card { background: var(--white); border-radius: 16px; padding: 28px 24px; margin-bottom: 20px; border: 1px solid var(--cream-dark); transition: box-shadow .2s, transform .2s; cursor: pointer; text-decoration: none; display: block; color: inherit; }
+  .article-card:hover { box-shadow: 0 8px 32px rgba(30,45,78,.1); transform: translateY(-2px); }
+  .article-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .article-tag { font-size: .65rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); background: rgba(200,169,110,.1); padding: 3px 10px; border-radius: 20px; }
+  .article-date { font-size: .75rem; color: var(--text-soft); }
+  .article-card h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 700; color: var(--navy); line-height: 1.25; margin-bottom: 10px; }
+  .article-card p { font-size: .88rem; color: var(--text-soft); line-height: 1.65; }
+  .article-read { display: inline-block; margin-top: 16px; font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--navy); border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+
+  .article-full { display: none; padding: 32px 22px 72px; max-width: 680px; margin: 0 auto; }
+  .article-full.active { display: block; }
+  .back-btn { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--navy); background: none; border: none; cursor: pointer; margin-bottom: 28px; padding: 0; font-family: 'Jost', sans-serif; }
+  .full-tag { font-size: .68rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .full-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.6rem, 6vw, 2.2rem); font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 8px; }
+  .full-date { font-size: .78rem; color: var(--text-soft); margin-bottom: 28px; border-bottom: 1px solid var(--cream-dark); padding-bottom: 20px; }
+  .full-body { font-size: .95rem; line-height: 1.85; color: var(--text); }
+  .full-body p { margin-bottom: 18px; }
+  .full-body h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--navy); margin: 28px 0 10px; }
+
+  footer { background: var(--navy-deep); padding: 36px 22px; text-align: center; }
+  .footer-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+  .footer-crp { font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  footer p { font-size: .75rem; color: rgba(255,255,255,.25); }
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-name">Dra. Yasmin<br>Pinheiro Santos</div>
+    <div class="sidebar-crp">CRP 11/19274</div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/index.html">Página Inicial</a>
+    <a href="/index.html#servicos">Serviços</a>
+    <a href="/index.html#agendamento">Agendamento</a>
+    <a href="/index.html#depoimentos">Depoimentos</a>
+    <a href="/artigos.html" class="active">Novidades</a>
+  </nav>
+  <a href="https://api.whatsapp.com/message/E3NKFQCPU4LGM1?autoload=1&app_absent=0" class="sidebar-wpp" target="_blank">WhatsApp</a>
+</aside>
+
+<header class="topbar">
+  <button class="menu-btn" onclick="openSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-center">
+    <div class="topbar-name">Yasmin Pinheiro Santos</div>
+    <div class="topbar-sub">Psicóloga Infantojuvenil · CRP 11/19274</div>
+  </div>
+  <a href="https://api.whatsapp.com/message/E3NKFQCPU4LGM1?autoload=1&app_absent=0" target="_blank" class="topbar-wpp-btn">Agendar</a>
+</header>
+
+<div class="page-hero">
+  <div class="page-tag">Psicologia &amp; Desenvolvimento</div>
+  <h1>Novidades</h1>
+  <p>Artigos, reflexões e dicas sobre saúde mental infantojuvenil.</p>
+</div>
+
+<section class="articles-section" id="articles-list"></section>
+
+<div class="article-full" id="article-full">
+  <button class="back-btn" onclick="showList()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Voltar
+  </button>
+  <div class="full-tag" id="full-tag"></div>
+  <div class="full-title" id="full-title"></div>
+  <div class="full-date" id="full-date"></div>
+  <div class="full-body" id="full-body"></div>
+</div>
+
+<footer>
+  <div class="footer-name">Dra. Yasmin Pinheiro Santos</div>
+  <div class="footer-crp">CRP 11/19274 · Psicóloga Infantojuvenil</div>
+  <p>© 2026 Todos os direitos reservados</p>
+</footer>
+
+<script>
+  function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('show'); document.body.style.overflow = 'hidden'; }
+  function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); document.body.style.overflow = ''; }
+
+  const articles = [
+    {
+      id: 1,
+      tag: "Desenvolvimento",
+      date: "Abril 2026",
+      title: "Por que o brincar é essencial para o desenvolvimento infantil?",
+      summary: "O brincar não é apenas diversão — é a linguagem natural da criança e o principal meio pelo qual ela aprende sobre si mesma e o mundo.",
+      body: `<p>O brincar não é apenas diversão — é a linguagem natural da criança e o principal meio pelo qual ela aprende sobre si mesma e o mundo ao seu redor.</p><h3>O que acontece no cérebro durante a brincadeira</h3><p>Quando uma criança brinca, seu cérebro está em plena atividade. Conexões neurais se formam, a criatividade floresce, e habilidades sociais e emocionais são desenvolvidas de forma natural e prazerosa.</p><h3>O papel dos pais</h3><p>Os pais que participam das brincadeiras dos filhos fortalecem o vínculo afetivo e oferecem um espaço seguro para que a criança explore o mundo. Não precisa ser por horas — qualidade importa mais que quantidade.</p><p>Se tiver dúvidas sobre o desenvolvimento do seu filho, estou à disposição para conversar.</p>`
+    },
+    {
+      id: 2,
+      tag: "TEA",
+      date: "Março 2026",
+      title: "Sinais precoces do autismo: o que os pais devem observar",
+      summary: "O diagnóstico precoce do Transtorno do Espectro Autista abre portas para intervenções que fazem toda a diferença na vida da criança e da família.",
+      body: `<p>O diagnóstico precoce do Transtorno do Espectro Autista (TEA) abre portas para intervenções que fazem toda a diferença no desenvolvimento da criança.</p><h3>Alguns sinais que merecem atenção</h3><p>Pouco contato visual, ausência de resposta ao próprio nome, atraso na fala, movimentos repetitivos ou interesses muito restritos são alguns dos sinais que podem indicar a necessidade de uma avaliação especializada.</p><h3>Diagnóstico não é sentença</h3><p>Receber um diagnóstico de TEA pode ser assustador para os pais, mas é o primeiro passo para oferecer ao filho o suporte que ele precisa. Cada criança é única e tem seu próprio potencial a ser desenvolvido.</p><p>Se você tem dúvidas, procure um profissional de confiança. Estou aqui para ajudar.</p>`
+    }
+  ];
+
+  function renderList() {
+    const list = document.getElementById('articles-list');
+    if (articles.length === 0) {
+      list.innerHTML = `<div style="text-align:center;padding:60px 20px;color:#6b6b6b;font-size:.9rem;line-height:1.7"><div style="font-size:2.5rem;margin-bottom:16px">✍️</div>Em breve, novos artigos por aqui.</div>`;
+      return;
+    }
+    list.innerHTML = articles.map(a => `
+      <a class="article-card" onclick="showArticle(${a.id}); return false;" href="#">
+        <div class="article-meta">
+          <span class="article-tag">${a.tag}</span>
+          <span class="article-date">${a.date}</span>
+        </div>
+        <h2>${a.title}</h2>
+        <p>${a.summary}</p>
+        <span class="article-read">Ler artigo →</span>
+      </a>
+    `).join('');
+  }
+
+  function showArticle(id) {
+    const a = articles.find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('full-tag').textContent = a.tag;
+    document.getElementById('full-title').textContent = a.title;
+    document.getElementById('full-date').textContent = a.date;
+    document.getElementById('full-body').innerHTML = a.body;
+    document.getElementById('articles-list').classList.add('hidden');
+    document.getElementById('article-full').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showList() {
+    document.getElementById('articles-list').classList.remove('hidden');
+    document.getElementById('article-full').classList.remove('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  renderList();
+</script>
+</body>
+</html>
